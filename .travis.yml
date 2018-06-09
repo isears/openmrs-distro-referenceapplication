@@ -2,16 +2,27 @@ env:
   matrix:
     secure: O8BxG7y3z4CaZtYnXk8dWsApXeVX+J7ZzBbftt9+ESBpqvhfGBcLMDVjsKqJ6dqY7G0p+tNSHuJTCoFbZLNBqjr7vYqXNuKsD7OSVRodr3CDiJLpHPkv1XullDVfgw7dZSqCJsC1Gh9qixlpkhDHHD5aGUPH0yzYMfSuQqYlKe5GGxEXruaVpGb+kZpDGV48LyGlbVZmkXK7whLydL9ivlra8CYfNV5Lqb5GJ5AxoMzEW0cT7dngBJTyjXqFRhMsalw5tzaNv5x7onBdyCItruT7JQtolulhIZx4zK5ZKwchappiuOjF8f1R1OSnApWuM1QR6Czlp0itcB7ZhMXsXUDbqbZmDf+xaNjbgU7M4pItKSsktgzLmM29KQPQxVn9sxtuxvzKXMkrDnEjjPEHe5wRZBrZAWsHVy4yxO5Fcvjs4fNx6wEL9KS41ybM8T7MX7vNqgvQ9cInlii4ObwBBZiX6qbsifgyi5CdYuJChFtIc9pRjhBGwFDUFvDLYqL+jBmELGH/CiCZYAsZaTj4L49QfnemWf87nPTqdTIS+mviG6GSKRWR/sMhUrLEYmUMCt8knesuqpgbzMyaI0c3z8YIgpu5h8/tRF0on0EJGy9IoGf3wtxvSI5M6nI8qBnUL2nnYmk/pwj6y4mXSYMAHzx2zED6aB5GrXl4Y8gFags=
 
+language: java
 sudo: required
 services:
   - docker
 
+before_script:
+  - mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:setup-sdk -DbatchAnswers=n
+  - mvn openmrs-sdk:build-distro -B -Ddir=refapp-production -DskipTests
+  - rm refapp-production/web/modules/referencedemodata-*  # Remove any demodata modules
+  - cp docker-production/startup.sh refapp-production/web/startup.sh  # Overwrite default startup.sh with production-optimized startup.sh
+
 script:
-  - docker version
-  - docker login -u isears -p $DOCKERHUB_PASS # Just temporary for testing
+  - docker build refapp-production/web/ --tag refapp-production
+
+after_script:
+  - docker images
+
+before_deploy:
+  - docker login -u isears -p $DOCKERHUB_PASS
+  - docker tag refapp-production refapp-production:latest
 
 deploy:
   provider: script
-  script: docker login -u isears -p $DOCKERHUB_PASS
-  on:
-    branch: master
+  script: docker push refapp-production:latest
