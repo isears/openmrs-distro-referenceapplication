@@ -8,6 +8,7 @@ services:
 
 script:
   - docker version
+  - docker login -u isears -p $DOCKERHUB_PASS # Just temporary for testing
 
 deploy:
   provider: script
