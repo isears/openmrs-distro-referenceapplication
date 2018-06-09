@@ -10,4 +10,7 @@ script:
   - docker version
 
 deploy:
-  - docker login -u isears -p $DOCKERHUB_PASS
+  provider: script
+  script: docker login -u isears -p $DOCKERHUB_PASS
+  on:
+    branch: master
