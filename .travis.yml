@@ -21,8 +21,8 @@ after_script:
 
 before_deploy:
   - docker login -u isears -p $DOCKERHUB_PASS
-  - docker tag refapp-production refapp-production:latest
+  - docker tag refapp-production isears/refapp-production:latest
 
 deploy:
   provider: script
-  script: docker push refapp-production:latest
+  script: docker push isears/refapp-production:latest
