@@ -12,7 +12,7 @@ services:
       MYSQL_PASSWORD: Admin123
 
   web:
-    image: 83ada54b19ea
+    image: isears/refapp-production:latest
     ports:
       - 8080:8080
     depends_on:
