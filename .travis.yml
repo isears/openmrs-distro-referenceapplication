@@ -9,5 +9,5 @@ services:
 script:
   - docker version
 
-before_deploy:
+deploy:
   - docker login -u isears -p $DOCKERHUB_PASS
