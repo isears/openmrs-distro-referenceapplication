@@ -1,35 +1,13 @@
-language: java
+env:
+  matrix:
+    secure: O8BxG7y3z4CaZtYnXk8dWsApXeVX+J7ZzBbftt9+ESBpqvhfGBcLMDVjsKqJ6dqY7G0p+tNSHuJTCoFbZLNBqjr7vYqXNuKsD7OSVRodr3CDiJLpHPkv1XullDVfgw7dZSqCJsC1Gh9qixlpkhDHHD5aGUPH0yzYMfSuQqYlKe5GGxEXruaVpGb+kZpDGV48LyGlbVZmkXK7whLydL9ivlra8CYfNV5Lqb5GJ5AxoMzEW0cT7dngBJTyjXqFRhMsalw5tzaNv5x7onBdyCItruT7JQtolulhIZx4zK5ZKwchappiuOjF8f1R1OSnApWuM1QR6Czlp0itcB7ZhMXsXUDbqbZmDf+xaNjbgU7M4pItKSsktgzLmM29KQPQxVn9sxtuxvzKXMkrDnEjjPEHe5wRZBrZAWsHVy4yxO5Fcvjs4fNx6wEL9KS41ybM8T7MX7vNqgvQ9cInlii4ObwBBZiX6qbsifgyi5CdYuJChFtIc9pRjhBGwFDUFvDLYqL+jBmELGH/CiCZYAsZaTj4L49QfnemWf87nPTqdTIS+mviG6GSKRWR/sMhUrLEYmUMCt8knesuqpgbzMyaI0c3z8YIgpu5h8/tRF0on0EJGy9IoGf3wtxvSI5M6nI8qBnUL2nnYmk/pwj6y4mXSYMAHzx2zED6aB5GrXl4Y8gFags=
 
-jdk: oraclejdk8
-
+sudo: required
 services:
   - docker
- 
-addons:
-  sauce_connect:
-    username: $SAUCELABS_USERNAME
-    access_key: $SAUCELABS_ACCESSKEY
 
-env:
-  - DB=mysql
-  - DB=mariadb
- 
-cache:
-  directories:
-  - $HOME/.m2
- 
-before_cache:
-  - rm -rf $HOME/.m2/repository/org/openmrs
- 
-install: true
+script:
+  - docker version
 
-script: ./travis_script.sh
-
-after_script: ./travis_after_script.sh
-
-notifications:
-  irc:
-    channels:
-      - "chat.freenode.net#openmrs"
-    on_failure: always
-    on_success: change
+before_deploy:
+  - docker login -u isears -p $DOCKERHUB_PASS
