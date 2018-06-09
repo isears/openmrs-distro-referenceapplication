@@ -1,0 +1,29 @@
+# For local testing of travis build
+version: '2'
+
+services:
+  db:
+    image: mysql:5.6
+    command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci"
+    environment:
+      MYSQL_DATABASE: openmrs
+      MYSQL_ROOT_PASSWORD: Admin123
+      MYSQL_USER: openmrs
+      MYSQL_PASSWORD: Admin123
+
+  web:
+    image: 83ada54b19ea
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      DB_DATABASE: openmrs
+      DB_HOST: db
+      DB_USERNAME: openmrs
+      DB_PASSWORD: Admin123
+      DB_CREATE_TABLES: 'true'  # change to 'true' if using an empty database
+      DB_AUTO_UPDATE: 'false'    # change to 'true' if using an empty database
+      MODULE_WEB_ADMIN: 'true'   # allow web admin on OpenMRS
+      OPENMRS_ADMIN_PASSWORD: 'CustomPassword123'
+
